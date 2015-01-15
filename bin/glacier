@@ -47,7 +47,7 @@ glacier <command> [args]
     Commands
         vaults    - Operations with vaults
         jobs      - Operations with jobs
-        upload    - Upload files to a vault. If the vault doesn't exits, it is
+        upload    - Upload files to a vault. If the vault doesn't exist, it is
                     created
 
     Common args:
