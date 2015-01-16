@@ -74,19 +74,20 @@ class Config(ConfigParser):
         """Load a credential file as is setup like the Java utilities"""
         c_data = StringIO()
         c_data.write("[Credentials]\n")
-        for line in open(path, "r").readlines():
-            c_data.write(line.replace("AWSAccessKeyId", "aws_access_key_id").replace("AWSSecretKey", "aws_secret_access_key"))
+        with open(path, 'r') as file:
+            for line in file:
+                c_data.write(line.replace("AWSAccessKeyId", "aws_access_key_id").replace("AWSSecretKey", "aws_secret_access_key"))
         c_data.seek(0)
         self.readfp(c_data)
 
     def load_from_path(self, path):
-        file = open(path)
-        for line in file.readlines():
-            match = re.match("^#import[\s\t]*([^\s^\t]*)[\s\t]*$", line)
-            if match:
-                extended_file = match.group(1)
-                (dir, file) = os.path.split(path)
-                self.load_from_path(os.path.join(dir, extended_file))
+        with open(path, 'r') as file:
+            for line in file:
+                match = re.match("^#import[\s\t]*([^\s^\t]*)[\s\t]*$", line)
+                if match:
+                    extended_file = match.group(1)
+                    (dir, file) = os.path.split(path)
+                    self.load_from_path(os.path.join(dir, extended_file))
         self.read(path)
 
     def save_option(self, path, section, option, value):
@@ -100,9 +101,8 @@ class Config(ConfigParser):
         if not config.has_section(section):
             config.add_section(section)
         config.set(section, option, value)
-        fp = open(path, 'w')
-        config.write(fp)
-        fp.close()
+        with open(path, 'w') as fp:
+            config.write(fp)
         if not self.has_section(section):
             self.add_section(section)
         self.set(section, option, value)
